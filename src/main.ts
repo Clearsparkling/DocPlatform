@@ -1,3 +1,6 @@
+// 重置样式表
+import "./assets/reset.css"
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
