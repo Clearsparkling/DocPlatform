@@ -16,28 +16,48 @@ const toLogin = () => {
 }
 
 // 注册
-const regesterAccount = ref()
-const regesterPassword = ref()
-const regesterAgainPassword = ref()
+const registerAccount = ref()
+const registerPassword = ref()
+const registerAgainPassword = ref()
 
-const regester = () => {
-    if (!regesterAccount.value) {
+const register = () => {
+    if (!registerAccount.value) {
         alert("请输入要创建的账户名")
-    } else if (!(regesterPassword.value == regesterAgainPassword.value)) {
+    } else if (!(registerPassword.value == registerAgainPassword.value)) {
         alert("两次输入的密码不同")
     } else {
-        request.post("/", {
-            username: regesterAccount.value,
-            password:regesterPassword.value
-        }).then(({data}) => {
+        request.post("/auth/register", {
+            username: registerAccount.value,
+            password: registerPassword.value
+        }).then(({ data }) => {
             const { accessToken } = data
             localStorage.setItem("token", accessToken)
-            // router.push()
+            router.push("/")
         })
     }
-    
 }
 
+
+// 登录
+const loginAccount = ref()
+const loginPassword = ref()
+
+const login = () => {
+    if (!loginAccount.value) {
+        alert("请输入您的账户")
+    } else if (!loginPassword.value) {
+        alert("请输入您的密码")
+    } else {
+        request.post("/auth/login", {
+            username: loginAccount.value,
+            password: loginPassword.value
+        }).then(({ data }) => {
+            const { accessToken } = data
+            localStorage.setItem("token", accessToken)
+            router.push("/")
+        })
+    }
+}
 
 
 
@@ -51,18 +71,18 @@ const regester = () => {
                 <div class="galss"></div>
             </div>
 
-            <div class="regester">
+            <div class="register">
                 <div class="left-flex-box">
                     <span style="font-size: 40px;">注册</span>
                     <div class="input-flex-box">
                         <span>账户</span>
-                        <input type="text" class="input-style">
+                        <input v-model="registerAccount" type="text" class="input-style">
                         <span>密码</span>
-                        <input type="password" class="input-style">
+                        <input v-model="registerPassword" type="password" class="input-style">
                         <span>请再次输入密码</span>
-                        <input type="password" class="input-style">
+                        <input v-model="registerAgainPassword" type="password" class="input-style">
                     </div>
-                    <button class="regester-button button-style">
+                    <button @click="register()" class="register-button button-style">
                         注册
                     </button>
                     <span>已有账号？</span>
@@ -82,11 +102,11 @@ const regester = () => {
                         <span>密码</span>
                         <input type="password" class="input-style">
                     </div>
-                    <button class="login-button button-style">
+                    <button @click="login()" class="login-button button-style">
                         登录
                     </button>
                     <span>还没有账号？</span>
-                    <button @click="toRegester()" class="to-regester button-style">
+                    <button @click="toRegester()" class="to-register button-style">
                         去注册
                     </button>
                 </div>
@@ -163,7 +183,7 @@ const regester = () => {
 
 /* 登录卡片 */
 .login,
-.regester {
+.register {
     height: 100%;
     width: 40%;
     color: white;
