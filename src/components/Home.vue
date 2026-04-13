@@ -5,36 +5,45 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { onMounted } from 'vue';
 
+// 注册滚动触发器和滚动平滑
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
-onMounted(() => {
+// 转换动画方法
+const homeLineAnimation = () => {
+    // 获取第一个line-svg多根svg的dom
     const boxnum = gsap.utils.toArray(".boxnum");
 
-    gsap.to(boxnum, {
-        xPercent: -100 * (boxnum.length - 1),
-        ease: "none",
-        scrollTrigger: {
-            trigger: ".gsapTest",
-            pin: true,
-            scrub: 0.5,
-            end: () => "+=" + (document.querySelector(".gsapTest") as HTMLElement)!.offsetWidth
-        }
-    })
 
-
+    // lines svg ScrollTrigger
     const lineSvgs = gsap.utils.toArray(".line-svg");
     gsap.to(lineSvgs, {
         strokeDashoffset: 0,
         ease: "none",
         scrollTrigger: {
-            trigger: ".box",
-            start: "top center",
+            trigger: ".boxnum",
+            start: "center bottom",
             scrub: 2,
-            end:"top top"
-        } 
+            end: "top 25%"
+        }
     });
 
+    // end-line svg ScrollTrigger
+    gsap.to(".end-line", {
+        strokeDashoffset: 0,
+        ease: "none",
+        scrollTrigger: {
+            trigger: ".boxnum",
+            start: "100px 25%",
+            scrub: 2,
+            end: "center center",
+        }
+    })
+}
 
+
+onMounted(() => {
+    // 调用首页转换动画方法
+    homeLineAnimation()
 })
 
 
@@ -66,9 +75,13 @@ onMounted(() => {
 
 
 
-        </div>
-        <div class="gsapTest">
+            <!--  -->
+
             <div class="boxnum">
+                <div class="title-box">
+                    <span style="font-size: 24px; color: #ffffff; font-weight: 500;">格式转换基于开源项目MarkItDown构建</span>
+                    <span style="font-size: 18px; color: rgba(255, 255, 255, 0.8);">Exce,Word,PPT,PDF,HTML,IMG只需上传，通通MarkDown</span>
+                </div>
                 <div class="box">
                     <div class="icon-box">
                         <!-- excel -->
@@ -225,32 +238,76 @@ onMounted(() => {
                         </div>
 
                     </div>
+
+                    <div class="micorsoft-icon-box">
+                        <div class="border-box">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="30" height="30">
+                                <rect x="0" y="0" width="47" height="47" fill="#f25022" />
+                                <rect x="53" y="0" width="47" height="47" fill="#7fbb00" />
+                                <rect x="0" y="53" width="47" height="47" fill="#00a1f1" />
+                                <rect x="53" y="53" width="47" height="47" fill="#ffbb00" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="end-line-box">
+                        <svg class="end-line" xmlns="http://www.w3.org/2000/svg" width="379" height="2"
+                            viewBox="0 0 379 2">
+                            <line x1="0" y1="1" x2="379" y2="1" stroke="white" stroke-width="2" />
+                        </svg>
+                    </div>
+
+                    <div class="markdown-icon-box">
+
+                        <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48.75" height="30" viewBox="0 0 208 128">
+                                <rect x="5" y="5" width="198" height="118" rx="10" ry="10"
+                                    style="fill:white;stroke:#ffffff;stroke-width:10" />
+                                <path d="M30 98V30h20l20 25 20-25h20v68H90V59L70 84 50 59v39H30z" />
+                                <path d="M155 98l-30-33h20V30h20v35h20l-30 33z" />
+                            </svg>
+                        </div>
+
+                    </div>
                 </div>
             </div>
+
+
         </div>
+
     </div>
 </template>
 
 <style scoped>
-.gsapTest {
+
+.title-box{
+    height: 10%;
+    padding: 5%;
     display: flex;
-    width: fit-content;
+    flex-direction: column;
+    gap: 30px;
+    font-family: "APK Protocol";
+}
+
+.title-box span{
+    display: block;
 }
 
 .boxnum {
     height: 100vh;
-    width: 100vw;
+    width: min(95%, 1440px);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    border: 1px solid #3B3440;
 }
 
 .box {
-    height: 80vh;
-    width: 80vw;
-    background-color: #747bff;
-    border-radius: 50px;
+    width: min(95%, 1440px);
+    height: 80%;
     display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
 }
 
@@ -261,17 +318,17 @@ onMounted(() => {
     align-items: end;
     gap: 29px;
     height: 100%;
-    width: 200px;
-
+    width: 50px;
 }
 
 .border-box {
-    height: 50px;
-    width: 50px;
+    height: 48px;
+    width: 48px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #16171D;
+    border: #747bff 3px solid;
     border-radius: 10px;
 }
 
@@ -348,7 +405,7 @@ onMounted(() => {
     width: 160px;
     height: 56px;
     border: none;
-    background: linear-gradient(135deg, #646cff, #747bff);
+    background: linear-gradient(135deg, rgb(179,154,255), #747bff);
     color: white;
     font-size: 18px;
     font-weight: 600;
@@ -389,8 +446,30 @@ onMounted(() => {
     stroke-linecap: round;
     stroke-dasharray: 410;
     stroke-dashoffset: 410;
-    animation: svg 2s ease infinite;
 }
 
+.micorsoft-icon-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.end-line-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 20px;
+}
+
+.end-line-box svg {
+    stroke-linecap: round;
+    stroke-dasharray: 379;
+    stroke-dashoffset: 379;
+}
+
+.markdown-icon-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>
