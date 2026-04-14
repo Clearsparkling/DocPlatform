@@ -29,8 +29,9 @@ const register = () => {
         request.post("/auth/register", {
             username: registerAccount.value,
             password: registerPassword.value
-        }).then(({ data }) => {
-            const { accessToken } = data
+        }).then(res => {
+            console.log(res)
+            const { accessToken } = res.data
             localStorage.setItem("token", accessToken)
             router.push("/")
         })
@@ -55,6 +56,8 @@ const login = () => {
             const { accessToken } = data
             localStorage.setItem("token", accessToken)
             router.push("/")
+        }).catch((params) => {
+            console.log(params)
         })
     }
 }
@@ -98,9 +101,9 @@ const login = () => {
                     <span style="font-size: 40px;">登录</span>
                     <div class="input-flex-box">
                         <span>账户</span>
-                        <input type="text" class="input-style">
+                        <input v-model="loginAccount" type="text" class="input-style">
                         <span>密码</span>
-                        <input type="password" class="input-style">
+                        <input v-model="loginPassword" type="password" class="input-style">
                     </div>
                     <button @click="login()" class="login-button button-style">
                         登录
