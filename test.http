@@ -1,0 +1,11 @@
+
+POST http://localhost:8080/api/documents/upload
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbGVhciIsImlhdCI6MTc3NjI2MDcwNCwiZXhwIjoxNzc2MzQ3MTA0fQ.b6pOYioQ_Y5FL0Ly-sz8NIGyzM7eiOjmkJS3Ro6IdYM
+Content-Type: multipart/form-data; boundary=aaa
+
+--aaa
+Content-Disposition: form-data; name="file"; filename="test.md"
+Content-Type: text/markdown
+
+< ./src/svg/Axios二次封装.md
+--aaa--

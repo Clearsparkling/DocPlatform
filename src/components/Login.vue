@@ -1,7 +1,9 @@
 <script lang='ts' setup name='Login'>
-import { ref } from 'vue'
+import { ref, toRefs } from 'vue'
 import router from '@/router'
 import request from '@/utils/request'
+import { useUserStore } from '@/stores/userStore'
+import { storeToRefs } from 'pinia'
 
 
 
@@ -15,25 +17,36 @@ const toLogin = () => {
     shadeDom.style.right = "40%"
 }
 
+// 解构useUserStore
+const { userToken, userUsername } = storeToRefs(useUserStore())
+
 // 注册
 const registerAccount = ref()
 const registerPassword = ref()
 const registerAgainPassword = ref()
 
-const register = () => {
+const register = async () => {
     if (!registerAccount.value) {
         alert("请输入要创建的账户名")
     } else if (!(registerPassword.value == registerAgainPassword.value)) {
         alert("两次输入的密码不同")
     } else {
-        request.post("/auth/register", {
+        await request.post("/auth/register", {
             username: registerAccount.value,
             password: registerPassword.value
         }).then(res => {
-            console.log(res)
-            const { accessToken } = res.data
-            localStorage.setItem("token", accessToken)
-            router.push("/")
+            const { accessToken, username } = res.data
+            // 存储token和用户名
+            userToken.value = accessToken
+            userUsername.value = username
+            router.push({
+                name: "userhomepage",
+                params: { id: username }
+            })
+        }).catch((error) => {
+            const errorAlter = document.querySelector(".register-error-alter") as HTMLElement
+            errorAlter.style.color = "#F6C65A"
+            errorAlter.innerText = "该用户名已被注册"
         })
     }
 }
@@ -43,21 +56,30 @@ const register = () => {
 const loginAccount = ref()
 const loginPassword = ref()
 
-const login = () => {
+const login = async () => {
     if (!loginAccount.value) {
         alert("请输入您的账户")
     } else if (!loginPassword.value) {
         alert("请输入您的密码")
     } else {
-        request.post("/auth/login", {
+        await request.post("/auth/login", {
             username: loginAccount.value,
             password: loginPassword.value
         }).then(({ data }) => {
-            const { accessToken } = data
-            localStorage.setItem("token", accessToken)
-            router.push("/")
+            // 将token和用户名解构赋值
+            const { accessToken, username } = data
+            // 存储token和用户名
+            userToken.value = accessToken
+            userUsername.value = username
+            // 路由跳转
+            router.push({
+                name: "userhomepage",
+                params: { id: username }
+            })
         }).catch((params) => {
-            console.log(params)
+            const errorAlter = document.querySelector(".error-alter") as HTMLElement
+            errorAlter.style.color = "#F6C65A"
+            errorAlter.innerText = "账户名或密码错误"
         })
     }
 }
@@ -75,7 +97,7 @@ const login = () => {
             </div>
 
             <div class="register">
-                <div class="left-flex-box">
+                <div @keydown.enter="register()" class="left-flex-box">
                     <span style="font-size: 40px;">注册</span>
                     <div class="input-flex-box">
                         <span>账户</span>
@@ -85,6 +107,7 @@ const login = () => {
                         <span>请再次输入密码</span>
                         <input v-model="registerAgainPassword" type="password" class="input-style">
                     </div>
+                    <span class="register-error-alter"></span>
                     <button @click="register()" class="register-button button-style">
                         注册
                     </button>
@@ -96,7 +119,7 @@ const login = () => {
             </div>
 
             <div class="login">
-                <div class="left-flex-box">
+                <div @keydown.enter="login()" class="left-flex-box">
 
                     <span style="font-size: 40px;">登录</span>
                     <div class="input-flex-box">
@@ -105,6 +128,7 @@ const login = () => {
                         <span>密码</span>
                         <input v-model="loginPassword" type="password" class="input-style">
                     </div>
+                    <span class="error-alter"></span>
                     <button @click="login()" class="login-button button-style">
                         登录
                     </button>

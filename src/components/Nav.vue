@@ -1,14 +1,47 @@
 <script lang='ts' setup name='Nav'>
+import { computed, onMounted, ref } from 'vue';
+import request from '@/utils/request';
+import router from '@/router';
+import { useUserStore } from '@/stores/userStore';
+import { storeToRefs } from 'pinia';
+
+const { userToken, userUsername } = storeToRefs(useUserStore())
+
+
+// 相关链接数组
 const aboutUrl = [
     {
         name: "MarkItDown",
         url: "https://github.com/microsoft/markitdown"
     },
     {
-        name: "GitHub",
-        url: ""
+        name: "Markdown-it",
+        url: "https://github.com/markdown-it/markdown-it"
+    },
+    {
+        name: "Github-Markdown-css",
+        url: "https://github.com/sindresorhus/github-markdown-css"
     }
 ]
+
+// 退出登录
+const logOut = () => {
+    userToken.value = ''
+    userUsername.value = ''
+    router.push("/login")
+}
+
+// 登录导航条逻辑
+// false 未登录
+// true 已登录
+const loginType = computed(() => {
+    if (!userToken.value) {
+        return false
+    } else if (userToken.value) {
+        return true
+    }
+})
+
 </script>
 
 <template>
@@ -33,8 +66,12 @@ const aboutUrl = [
 
 
             <div class="right">
-                <a class="login resetButton" href="/login">
+                <a v-if="!loginType" class="login resetButton" href="/login">
                     登录
+                </a>
+                <a :href="`/${userUsername}`" v-if="loginType" class="resetButton">{{ userUsername }}</a>
+                <a @click="logOut" v-if="loginType" class="resetButton">
+                    退出登录
                 </a>
             </div>
         </div>
@@ -48,6 +85,10 @@ nav {
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+nav .right {
+    display: flex;
 }
 
 nav .centent-box {
@@ -70,6 +111,7 @@ nav .resetButton {
     color: white;
     font-size: 16px;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 nav .resetButton:hover {
@@ -90,7 +132,7 @@ nav .resetButton:hover {
     display: none;
 }
 
-.margin-box{
+.margin-box {
     margin: 10px;
 }
 
@@ -113,8 +155,8 @@ nav .resetButton:hover {
     color: rgb(179, 154, 255);
 }
 
-.url:hover + .about-url-box,
-.about-url-box:hover{
+.url:hover+.about-url-box,
+.about-url-box:hover {
     display: block;
 }
 </style>

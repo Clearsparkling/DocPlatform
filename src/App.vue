@@ -9,10 +9,10 @@ import Bottom from './components/Bottom.vue';
 <template>
   <div class="background">
     <Nav></Nav>
-    
-    <RouterView>
 
-    </RouterView>
+      <RouterView>
+
+      </RouterView>
 
     <Bottom></Bottom>
   </div>
