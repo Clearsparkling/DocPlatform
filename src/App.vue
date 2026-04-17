@@ -6,7 +6,32 @@ import Nav from './components/Nav.vue';
 // 底部组件
 import Bottom from './components/Bottom.vue';
 
+import request from './utils/request';
+import { useUserStore } from './stores/userStore';
+import { ElNotification } from 'element-plus'
+const errorAlter = (title: string, messgae: string) => {
+  ElNotification({
+    title: title,
+    message: messgae,
+    type: 'error'
+  })
+}
 
+const userStore = useUserStore()
+
+
+onMounted(async () => {
+  if (userStore.userToken) {
+    await request.get("/auth/token/expiration").then((res) => {
+      console.log(res.data)
+    }).catch((error) => {
+      userStore.userToken = ''
+      userStore.userUsername = ''
+      errorAlter('错误','token已过期，请重新登录')
+    })
+  }
+  
+})
 
 </script>
 
@@ -33,7 +58,7 @@ import Bottom from './components/Bottom.vue';
   align-items: center;
 }
 
-.flex-box{
+.flex-box {
   flex: 1;
 }
 </style>

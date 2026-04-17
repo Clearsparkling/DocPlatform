@@ -27,15 +27,16 @@ const registerAgainPassword = ref()
 
 const register = async () => {
     if (!registerAccount.value) {
-        alert("请输入要创建的账户名")
+        errorAlter('错误', '请输入要创建的账户名')
     } else if (!(registerPassword.value == registerAgainPassword.value)) {
-        alert("两次输入的密码不同")
+        errorAlter('错误','两次输入的密码不同')
     } else {
         await request.post("/auth/register", {
             username: registerAccount.value,
             password: registerPassword.value
         }).then(res => {
             const { accessToken, username } = res.data
+            successAlter(`注册成功 ${username} 欢迎您`, `已为您跳转主页`)
             // 存储token和用户名
             userToken.value = accessToken
             userUsername.value = username
@@ -44,9 +45,7 @@ const register = async () => {
                 params: { id: username }
             })
         }).catch((error) => {
-            const errorAlter = document.querySelector(".register-error-alter") as HTMLElement
-            errorAlter.style.color = "#F6C65A"
-            errorAlter.innerText = "该用户名已被注册"
+            errorAlter('该用户名已被注册', '请更换其他用户名')
         })
     }
 }
@@ -58,16 +57,18 @@ const loginPassword = ref()
 
 const login = async () => {
     if (!loginAccount.value) {
-        alert("请输入您的账户")
+        errorAlter('错误', '请输入您的账户')
     } else if (!loginPassword.value) {
-        alert("请输入您的密码")
+        errorAlter('错误', '请输入您的密码')
     } else {
         await request.post("/auth/login", {
             username: loginAccount.value,
             password: loginPassword.value
         }).then(({ data }) => {
+
             // 将token和用户名解构赋值
             const { accessToken, username } = data
+            successAlter('登录成功！', `${username} 欢迎您`)
             // 存储token和用户名
             userToken.value = accessToken
             userUsername.value = username
@@ -77,12 +78,30 @@ const login = async () => {
                 params: { id: username }
             })
         }).catch((params) => {
-            const errorAlter = document.querySelector(".error-alter") as HTMLElement
-            errorAlter.style.color = "#F6C65A"
-            errorAlter.innerText = "账户名或密码错误"
+            errorAlter('登录失败', '账号或密码错误')
         })
     }
 }
+
+
+// Alter
+import { ElNotification } from 'element-plus'
+const successAlter = (title: string, messgae: string) => {
+    ElNotification({
+        title: title,
+        message: messgae,
+        type: 'success'
+    })
+}
+
+const errorAlter = (title: string, messgae: string) => {
+    ElNotification({
+        title: title,
+        message: messgae,
+        type: 'error'
+    })
+}
+
 
 
 
@@ -182,6 +201,7 @@ const login = async () => {
     backdrop-filter: blur(10px);
     display: flex;
     justify-content: space-between;
+    align-items: center;
     position: relative;
 }
 
@@ -226,8 +246,9 @@ const login = async () => {
     display: flex;
     justify-content: center;
     align-items: start;
-    gap: 30px;
+    gap: 20px;
     flex-direction: column;
+    padding: 30px;
 }
 
 .input-flex-box {

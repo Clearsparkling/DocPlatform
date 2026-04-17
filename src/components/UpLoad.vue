@@ -1,10 +1,22 @@
 <script lang='ts' setup name='UpLoad'>
 import { UploadFilled } from '@element-plus/icons-vue'
 import request from '@/utils/request';
-
 import type { UploadRequestOptions } from 'element-plus';
-import { onMounted } from 'vue';
-
+import { ElNotification } from 'element-plus'
+const successAlter = (title: string, messgae: string) => {
+    ElNotification({
+        title: title,
+        message: messgae,
+        type: 'success'
+    })
+}
+const errorAlter = (title: string, messgae: string) => {
+    ElNotification({
+        title: title,
+        message: messgae,
+        type: 'error'
+    })
+}
 
 // markdown请求
 const toUploadMarkdown = async (param: UploadRequestOptions) => {
@@ -23,29 +35,25 @@ const toUploadMarkdown = async (param: UploadRequestOptions) => {
         formdata.append("file", newFile)
 
         await request.post("/documents/upload",formdata).then((res) => {
-            console.log(res)
-        }).catch((params) => {
-            console.log(param)
+            successAlter('上传成功', `${res.data.data.title} 已成功上传`)
+        }).catch((error) => {
+            errorAlter('错误', '上传失败')
         })
     }
 }
 
 // 其他需转换的文件的请求
 const toUploadeatherDoc = async (param: UploadRequestOptions) => {
-    const newFile = new File([param.file], param.file.name,{
-        
-    })
-
     const formdata = new FormData()
     formdata.append("file", param.file)
 
-    await request.post("/documents/upload",formdata).then((res) => {
-        console.log(res.data)
+    await request.post("/documents/upload", formdata).then((res) => {
+        successAlter('上传成功',`${res.data.data.title} 已成功上传并转换为Markdown`)
+    }).catch((error) => {
+        errorAlter('错误','上传失败')
     })
 }
 
-onMounted(() => {
-})
 </script>
 
 <template>

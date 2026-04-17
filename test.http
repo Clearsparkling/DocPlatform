@@ -1,11 +1,3 @@
 
-POST http://localhost:8080/api/documents/upload
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbGVhciIsImlhdCI6MTc3NjI2MDcwNCwiZXhwIjoxNzc2MzQ3MTA0fQ.b6pOYioQ_Y5FL0Ly-sz8NIGyzM7eiOjmkJS3Ro6IdYM
-Content-Type: multipart/form-data; boundary=aaa
-
---aaa
-Content-Disposition: form-data; name="file"; filename="RouterMode.md"
-Content-Type: text/markdown
-
-< ./src/svg/RouterMode.md
---aaa--
+GET http://localhost:8080/api/auth/token/expiration
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjbGVhciIsImlhdCI6MTc3NjQ0MDk0MCwiZXhwIjoxNzc2NTI3MzQwfQ.cYo8QhSZOPKnZ3GCdK5Qpmqgr0caZffvGT2Ft6iKOQY

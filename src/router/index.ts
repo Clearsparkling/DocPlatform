@@ -33,6 +33,11 @@ const router = createRouter({
       name: "upload",
       component:() => import("../components/UpLoad.vue")
     },
+    {
+      path: "/compile",
+      name: "compile",
+      component:() => import("../components/Compile.vue")
+    },
 
 
     // 404 Not Found

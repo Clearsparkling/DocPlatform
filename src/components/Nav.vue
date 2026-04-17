@@ -4,6 +4,16 @@ import request from '@/utils/request';
 import router from '@/router';
 import { useUserStore } from '@/stores/userStore';
 import { storeToRefs } from 'pinia';
+import { routerKey } from 'vue-router';
+
+import { ElNotification } from 'element-plus'
+const successAlter = (title: string, messgae: string) => {
+    ElNotification({
+        title: title,
+        message: messgae,
+        type: 'success'
+    })
+}
 
 const { userToken, userUsername } = storeToRefs(useUserStore())
 
@@ -21,6 +31,10 @@ const aboutUrl = [
     {
         name: "Github-Markdown-css",
         url: "https://github.com/sindresorhus/github-markdown-css"
+    },
+    {
+        name: "md-editor",
+        url:"https://github.com/imzbf/md-editor-v3"
     }
 ]
 
@@ -28,6 +42,7 @@ const aboutUrl = [
 const logOut = () => {
     userToken.value = ''
     userUsername.value = ''
+    successAlter('退出登录成功','')
     router.push("/login")
 }
 
@@ -50,9 +65,9 @@ const loginType = computed(() => {
 
             <div class="left">
                 <div class="logo">
-                    <a href="/">
+                    <RouterLink to="/">
                     <img src="../svg/DocLogo.png" alt="">
-                   </a>
+                    </RouterLink>
                 </div>
                 <div class="drop-down">
                     <button class="url resetButton">
@@ -70,13 +85,13 @@ const loginType = computed(() => {
 
 
             <div class="right">
-                <a v-if="!loginType" class="login resetButton" href="/login">
+                <RouterLink to="/login" v-if="!loginType" class="login resetButton">
                     登录
-                </a>
-                <a :href="`/${userUsername}`" v-if="loginType" class="resetButton">{{ userUsername }}</a>
-                <a @click="logOut" v-if="loginType" class="resetButton">
+                </RouterLink>
+                <RouterLink :to="`/${userUsername}`" v-if="loginType" class="resetButton">{{ userUsername }}</RouterLink>
+                <div @click="logOut" v-if="loginType" class="resetButton">
                     退出登录
-                </a>
+                </div>
             </div>
         </div>
 

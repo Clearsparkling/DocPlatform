@@ -4,6 +4,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 // ScrollSmoother requires ScrollTrigger
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { onMounted } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import router from '@/router';
+const userStore = useUserStore()
 
 // 注册滚动触发器和滚动平滑
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
@@ -40,6 +43,14 @@ const homeLineAnimation = () => {
     })
 }
 
+const start = () => {
+    if (userStore.userToken) {
+        router.push(`/${userStore.userUsername}`)
+    } else {
+        router.push('/login')
+    }
+}
+
 
 onMounted(() => {
     // 调用首页转换动画方法
@@ -67,7 +78,7 @@ onMounted(() => {
                     </div>
 
                     <div class="buttonCentent">
-                        <button>开始</button>
+                        <button @click="start">开始</button>
                     </div>
                 </div>
 
@@ -80,7 +91,8 @@ onMounted(() => {
             <div class="boxnum">
                 <div class="title-box">
                     <span style="font-size: 24px; color: #ffffff; font-weight: 500;">格式转换基于开源项目MarkItDown构建</span>
-                    <span style="font-size: 18px; color: rgba(255, 255, 255, 0.8);">Exce,Word,PPT,PDF,HTML,IMG只需上传，通通MarkDown</span>
+                    <span
+                        style="font-size: 18px; color: rgba(255, 255, 255, 0.8);">Exce,Word,PPT,PDF,HTML,IMG只需上传，通通MarkDown</span>
                 </div>
                 <div class="box">
                     <div class="icon-box">
@@ -280,8 +292,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
-.title-box{
+.title-box {
     height: 10%;
     padding: 5%;
     display: flex;
@@ -290,7 +301,7 @@ onMounted(() => {
     font-family: "APK Protocol";
 }
 
-.title-box span{
+.title-box span {
     display: block;
 }
 
@@ -405,7 +416,7 @@ onMounted(() => {
     width: 160px;
     height: 56px;
     border: none;
-    background: linear-gradient(135deg, rgb(179,154,255), #747bff);
+    background: linear-gradient(135deg, rgb(179, 154, 255), #747bff);
     color: white;
     font-size: 18px;
     font-weight: 600;
