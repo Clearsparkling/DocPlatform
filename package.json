@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "axios": "^1.15.0",
+    "element-plus": "^2.13.7",
     "github-markdown-css": "^5.9.0",
     "gsap": "^3.14.2",
     "markdown-it": "^14.1.1",

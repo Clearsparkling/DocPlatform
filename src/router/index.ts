@@ -28,6 +28,11 @@ const router = createRouter({
       name: "userhomepage",
       component: () => import("../components/MarkdownText.vue")
     },
+    {
+      path: "/upload",
+      name: "upload",
+      component:() => import("../components/UpLoad.vue")
+    },
 
 
     // 404 Not Found

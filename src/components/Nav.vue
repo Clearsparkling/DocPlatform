@@ -49,7 +49,11 @@ const loginType = computed(() => {
         <div class="centent-box">
 
             <div class="left">
-                <div class="logo"></div>
+                <div class="logo">
+                    <a href="/">
+                    <img src="../svg/DocLogo.png" alt="">
+                   </a>
+                </div>
                 <div class="drop-down">
                     <button class="url resetButton">
                         相关链接
@@ -85,6 +89,23 @@ nav {
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+nav .left{
+    display: flex;
+}
+
+nav .logo{
+    width: 100px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+nav .logo img{
+    height: 40px;
 }
 
 nav .right {
@@ -130,6 +151,7 @@ nav .resetButton:hover {
     border-radius: 5px;
     top: 70px;
     display: none;
+    z-index: 999;
 }
 
 .margin-box {
