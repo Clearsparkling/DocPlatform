@@ -10,17 +10,12 @@ import router from '@/router';
 
 const activeDocId = ref()
 
-
 // markdown-it
 const md = markdownit()
 const result = ref()
 
 // markdown列表Active的选项
 const activeList = ref(0)
-
-// 加载
-const isLoading = ref(true)
-
 
 // get user markdown list
 interface User {

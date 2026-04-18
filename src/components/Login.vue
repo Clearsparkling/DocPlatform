@@ -248,7 +248,7 @@ const errorAlter = (title: string, messgae: string) => {
     align-items: start;
     gap: 20px;
     flex-direction: column;
-    padding: 30px;
+    padding: 40px 0;
 }
 
 .input-flex-box {
