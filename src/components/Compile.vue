@@ -1,6 +1,7 @@
 <script lang='ts' setup name='Compile'>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import { MdEditor } from 'md-editor-v3';
+import type { Themes } from 'md-editor-v3';
 import "md-editor-v3/lib/style.css"
 import { useUserStore } from '@/stores/userStore';
 import request from '@/utils/request';
@@ -21,6 +22,14 @@ export interface DocInfo {
     title: string,
     updatedAt: string
 }
+
+const state = reactive<{
+    text: string;
+    theme: Themes;
+}>({
+    text: '',
+    theme: 'dark',
+});
 
 const DocInfo = ref<DocInfo>()
 
@@ -56,7 +65,7 @@ const saveSucceed = () => {
 
 <template>
     <div class="centen">
-        <MdEditor class="mdeditor" @on-save="onSave" v-model="compileText" />
+        <MdEditor :theme="state.theme" class="mdeditor" @on-save="onSave" v-model="compileText" />
     </div>
 </template>
 

@@ -66,7 +66,7 @@ const toUpload = async (param: UploadRequestOptions) => {
 <template>
     <div class="centent">
         <div class="pointText MarkDownUpLoad">
-            Markdown格式的文件在此处上传
+           文件在此处上传
         </div>
 
         <el-upload class="upload-demo" drag :http-request="toUpload" multiple :show-file-list="false">
