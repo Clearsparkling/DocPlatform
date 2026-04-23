@@ -35,7 +35,7 @@ const register = async () => {
             username: registerAccount.value,
             password: registerPassword.value
         }).then(res => {
-            const { accessToken, username } = res.data
+            const { accessToken, username } = res.data.data
             successAlter(`注册成功 ${username} 欢迎您`, `已为您跳转主页`)
             // 存储token和用户名
             userToken.value = accessToken
