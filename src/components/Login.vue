@@ -9,12 +9,18 @@ import { storeToRefs } from 'pinia'
 
 // 注册登录遮罩切换方法
 const toRegester = () => {
-    const shadeDom = document.querySelector(".shade") as HTMLElement
-    shadeDom.style.right = "0%"
+    const shadeDom = document.querySelector(".shade")
+    if (shadeDom instanceof HTMLElement) {
+        shadeDom.style.right = "0%"
+    }
 }
 const toLogin = () => {
-    const shadeDom = document.querySelector(".shade") as HTMLElement
-    shadeDom.style.right = "40%"
+
+    // 利用Ts的instanceof自动收窄类型为HtmlElement
+    const shadeDom = document.querySelector(".shade")
+    if (shadeDom instanceof HTMLElement) {
+        shadeDom.style.right = "40%"
+    }
 }
 
 // 解构useUserStore
@@ -29,7 +35,7 @@ const register = async () => {
     if (!registerAccount.value) {
         errorAlter('错误', '请输入要创建的账户名')
     } else if (!(registerPassword.value == registerAgainPassword.value)) {
-        errorAlter('错误','两次输入的密码不同')
+        errorAlter('错误', '两次输入的密码不同')
     } else {
         await request.post("/auth/register", {
             username: registerAccount.value,
