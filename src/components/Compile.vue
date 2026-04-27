@@ -10,6 +10,25 @@ const userStroe = useUserStore()
 
 const compileText = ref()
 
+interface TyepScriptTest {
+    name: string,
+    age: number,
+    token: string
+}
+
+interface TyepScriptArrayTest<TypeScriptTest> {
+    add: (obj: TypeScriptTest) => void,
+    get: () => TypeScriptTest
+}
+
+
+const TypeTest = (value : string):string => {
+    return "Test"
+}
+
+    
+
+
 export interface DocInfo {
     converted: boolean,
     createdAt: string,

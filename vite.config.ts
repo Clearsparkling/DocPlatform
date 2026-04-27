@@ -15,4 +15,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  // 设置TSC编译的降级行为
+  build: {
+    target: 'es2020',
+  },
 })
