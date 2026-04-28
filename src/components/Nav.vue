@@ -1,12 +1,10 @@
 <script lang='ts' setup name='Nav'>
-import { computed, onMounted, ref } from 'vue';
-import request from '@/utils/request';
 import router from '@/router';
 import { useUserStore } from '@/stores/userStore';
 import { storeToRefs } from 'pinia';
-import { routerKey } from 'vue-router';
+import { computed } from 'vue';
 
-import { ElNotification } from 'element-plus'
+import { ElNotification } from 'element-plus';
 const successAlter = (title: string, messgae: string) => {
     ElNotification({
         title: title,
@@ -50,12 +48,9 @@ const logOut = () => {
 // false 未登录
 // true 已登录
 const loginType = computed(() => {
-    if (!userToken.value) {
-        return false
-    } else if (userToken.value) {
-        return true
-    }
+	return !!userToken.value
 })
+
 
 </script>
 

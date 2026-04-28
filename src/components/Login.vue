@@ -1,9 +1,9 @@
 <script lang='ts' setup name='Login'>
-import { ref, toRefs } from 'vue'
 import router from '@/router'
-import request from '@/utils/request'
 import { useUserStore } from '@/stores/userStore'
+import request from '@/utils/request'
 import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 
 
 
@@ -73,7 +73,7 @@ const login = async () => {
         }).then(({ data }) => {
 
             // 将token和用户名解构赋值
-            const { accessToken, username } = data
+            const { accessToken, username } = data.data
             successAlter('登录成功！', `${username} 欢迎您`)
             // 存储token和用户名
             userToken.value = accessToken
@@ -83,7 +83,7 @@ const login = async () => {
                 name: "userhomepage",
                 params: { id: username }
             })
-        }).catch((params) => {
+		}).catch((params) => {
             errorAlter('登录失败', '账号或密码错误')
         })
     }

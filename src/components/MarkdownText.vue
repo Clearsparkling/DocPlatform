@@ -1,11 +1,11 @@
 <script lang='ts' setup name='MarkdownText'>
 // markdown解析及样式
-import markdownit from 'markdown-it'
-import 'github-markdown-css/github-markdown-dark.css'
-import request from '@/utils/request';
-import { onMounted, ref } from 'vue';
-import { useUserStore } from '@/stores/userStore';
 import router from '@/router';
+import { useUserStore } from '@/stores/userStore';
+import request from '@/utils/request';
+import 'github-markdown-css/github-markdown-dark.css';
+import markdownit from 'markdown-it';
+import { onMounted, ref } from 'vue';
 
 
 const activeDocId = ref()
@@ -85,8 +85,7 @@ const deleteDocById = async () => {
 
 
 // 删除提示框
-import { ElMessageBox } from 'element-plus'
-import { ElNotification } from 'element-plus'
+import { ElMessageBox, ElNotification } from 'element-plus';
 
 const dialogVisible = ref(false)
 
