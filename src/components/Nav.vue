@@ -15,10 +15,6 @@ const successAlter = (title: string, messgae: string) => {
 
 const { userToken, userUsername } = storeToRefs(useUserStore())
 
-const gitTest = (value:string) => {
-    return value
-}
-
 // 相关链接数组
 const aboutUrl = [
     {
