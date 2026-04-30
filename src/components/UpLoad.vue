@@ -26,8 +26,6 @@ const toUpload = async (param: UploadRequestOptions) => {
     const lastIndex = param.file.name.lastIndexOf('.')
     const fileType = lastIndex === -1 ? "" : param.file.name.slice(lastIndex + 1);
 
-    console.log(fileType)
-
     // 校验是否为markdown文件
     if (fileType == "md") {
         // file是只读的 所以我们自行创建一个新的file
@@ -41,12 +39,12 @@ const toUpload = async (param: UploadRequestOptions) => {
         const formdata = new FormData()
         formdata.append("file", newFile)
 
-        await request.post("/documents/upload",formdata).then((res) => {
+        await request.post("/documents/upload", formdata).then((res) => {
             successAlter('上传成功', `${res.data.data.title} 已成功上传`)
         }).catch((error) => {
             errorAlter('错误', '上传失败')
         })
-    } else if(sustainType.includes(fileType)){
+    } else if (sustainType.includes(fileType)) {
         const formdata = new FormData()
         formdata.append("file", param.file)
 
@@ -56,7 +54,7 @@ const toUpload = async (param: UploadRequestOptions) => {
             errorAlter('错误', '上传失败')
         })
     } else {
-        errorAlter('错误','上传的文件不支持格式转换')
+        errorAlter('错误', '上传的文件不支持格式转换')
     }
 }
 
@@ -66,7 +64,7 @@ const toUpload = async (param: UploadRequestOptions) => {
 <template>
     <div class="centent">
         <div class="pointText MarkDownUpLoad">
-           文件在此处上传
+            文件在此处上传
         </div>
 
         <el-upload class="upload-demo" drag :http-request="toUpload" multiple :show-file-list="false">
