@@ -28,7 +28,6 @@ interface User {
 interface UserList {
     // 是否转换
     converted: boolean;
-
     createdAt: string;
     filePath: string;
     fileSize: number;

@@ -9,6 +9,8 @@ import Bottom from './components/Bottom.vue';
 import request from './utils/request';
 import { useUserStore } from './stores/userStore';
 import { ElNotification } from 'element-plus'
+import MagneticDemo from './components/MagneticDemo.vue'
+import TypeWriter from './components/TypeWriter.vue'
 const errorAlter = (title: string, messgae: string) => {
   ElNotification({
     title: title,
@@ -36,7 +38,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="background">
+  <!-- <div class="background">
     <Nav></Nav>
 
     <RouterView class="flex-box">
@@ -44,8 +46,10 @@ onMounted(async () => {
     </RouterView>
 
     <Bottom></Bottom>
-  </div>
+  </div> -->
 
+  <!-- <MagneticDemo /> -->
+<TypeWriter />
 </template>
 
 <style scoped>

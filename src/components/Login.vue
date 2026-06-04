@@ -70,7 +70,7 @@ const login = async () => {
     } else if (!loginPassword.value) {
         errorAlter('错误', '请输入您的密码')
     } else {
-        await request.post("/auth/login", {
+        await request.post("/api/tokenlogin", {
             username: loginAccount.value,
             password: loginPassword.value
         }).then(({ data }) => {
