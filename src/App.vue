@@ -11,6 +11,7 @@ import { useUserStore } from './stores/userStore';
 import { ElNotification } from 'element-plus'
 import MagneticDemo from './components/MagneticDemo.vue'
 import TypeWriter from './components/TypeWriter.vue'
+import Cross from './components/Cross.vue'
 const errorAlter = (title: string, messgae: string) => {
   ElNotification({
     title: title,
@@ -21,7 +22,6 @@ const errorAlter = (title: string, messgae: string) => {
 
 const userStore = useUserStore()
 
-
 onMounted(async () => {
   if (userStore.userToken) {
     await request.get("/auth/token/expiration").then((res) => {
@@ -29,10 +29,10 @@ onMounted(async () => {
     }).catch((error) => {
       userStore.userToken = ''
       userStore.userUsername = ''
-      errorAlter('错误','token已过期，请重新登录')
+      errorAlter('错误', 'token已过期，请重新登录')
     })
   }
-  
+
 })
 
 </script>
@@ -47,12 +47,22 @@ onMounted(async () => {
 
     <Bottom></Bottom>
   </div> -->
+  <Cross />
+  <MagneticDemo />
 
-  <!-- <MagneticDemo /> -->
-<TypeWriter />
+
+  <!-- <TypeWriter /> -->
 </template>
 
+<!-- 隐藏全局光标 -->
+<style>
+* {
+  cursor: none !important;
+}
+</style>
+
 <style scoped>
+
 .background {
   width: 100%;
   min-height: 100vh;

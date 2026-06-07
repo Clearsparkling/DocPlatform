@@ -4,7 +4,10 @@ import { onBeforeUnmount, onMounted, onUnmounted, ref } from 'vue';
 // ref自动获取pointer光标dom
 const pointerRef = ref<HTMLElement | null>(null);
 
-// pointer光标效果移动函数
+/**
+ * pointer光标效果移动函数
+ * @param me 
+ */
 const onMouseMove = (me: MouseEvent) => {
     if (pointerRef.value instanceof HTMLElement) {
         let x = me.clientX;
@@ -30,6 +33,7 @@ const pointerRefsChange = () => {
 
     // 获取全部需要触发的元素
     const pointerRefs = document.querySelectorAll('.pointerRefs');
+
 
     // 鼠标移出触发元素触发函数
     const mouseLeave = () => {
@@ -67,8 +71,8 @@ const pointerRefsChange = () => {
 }
 
 onMounted(() => {
-    window.addEventListener('mousemove', onMouseMove)
-    pointerRefsChange()
+    // window.addEventListener('mousemove', onMouseMove)
+    // pointerRefsChange()
 })
 
 onBeforeUnmount(() => {
@@ -77,7 +81,7 @@ onBeforeUnmount(() => {
 })
 
 onUnmounted(() => {
-    window.removeEventListener('mousemove', onMouseMove)
+    // window.removeEventListener('mousemove', onMouseMove)
 })
 
 
@@ -89,22 +93,22 @@ onUnmounted(() => {
 <template>
 
     <!-- Pointer -->
-    <div class="pointer" ref="pointerRef">
+    <!-- <div class="pointer" ref="pointerRef">
         <div></div>
         <div></div>
         <div></div>
         <div></div>
-    </div>
+    </div> -->
 
 
     <!-- Pointer End -->
 
     <div class="cententbox">
-        <div class="test pointerRefs">MagneticTest</div>
-        <div class="name pointerRefs">ClearSparkling</div>
-        <div class="url pointerRefs">https://github.com/Clearsparkling</div>
+        <div class="test cross-refs">MagneticTest</div>
+        <div class="name cross-refs">ClearSparkling</div>
+        <div class="url cross-refs">https://github.com/Clearsparkling</div>
 
-        <div class="box pointerRefs">
+        <div class="box cross-refs">
 
         </div>
     </div>
@@ -114,7 +118,6 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-
 .pointer {
     --width: 4rem;
     --height: 4rem;

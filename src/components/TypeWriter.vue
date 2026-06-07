@@ -1,5 +1,8 @@
 <script lang='ts' setup name='TypeWriter'>
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import type { T } from 'vue-router/dist/index-BzEKChPW.js'
+
+const string = '1'
 
 interface Props {
   texts?: string[]
@@ -11,7 +14,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  texts: () => ['冷水，我想听你说话！', '今天', '我很想你！'],
+  texts: () => ['冷水，我想听你说话！', '为什么不理我', '我很想你！'],
   typeSpeed: 100,
   deleteSpeed: 50,
   pauseTime: 2000,
@@ -34,6 +37,7 @@ const isVisible = ref(false)
 let typeTimer: ReturnType<typeof setTimeout> | null = null
 
 const currentText = () => props.texts[currentIndex.value] || ''
+
 
 const type = () => {
   isVisible.value = true
@@ -94,8 +98,8 @@ watch(() => props.texts, () => {
 </script>
 
 <template>
-  <div class="typewriter-wrapper">
-    <div class="typewriter-container">
+  <div class="typewriter-wrapper ">
+    <div class="typewriter-container cross-refs">
       <span class="typewriter-text">{{ displayText }}</span>
       <span class="typewriter-cursor" :class="{ blink: !isDeleting }">{{ cursor }}</span>
     </div>
@@ -141,10 +145,14 @@ watch(() => props.texts, () => {
 }
 
 @keyframes blink {
-  0%, 50% {
+
+  0%,
+  50% {
     opacity: 1;
   }
-  51%, 100% {
+
+  51%,
+  100% {
     opacity: 0;
   }
 }
