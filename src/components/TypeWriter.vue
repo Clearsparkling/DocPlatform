@@ -1,5 +1,5 @@
 <script lang='ts' setup name='TypeWriter'>
-import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch, computed } from 'vue';
 import type { T } from 'vue-router/dist/index-BzEKChPW.js'
 
 const string = '1'
@@ -23,10 +23,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'type', text: string): void
-  (e: 'delete', text: string): void
-  (e: 'complete', text: string): void
-  (e: 'allComplete'): void
+  type: [text: string]
+  delete: [text: string]
+  complete: [text: string]
+  allComplete: []
 }>()
 
 const displayText = ref('')

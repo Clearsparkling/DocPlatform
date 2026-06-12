@@ -47,7 +47,6 @@ const CrossRefsChange = () => {
 
     // 获取全部需要触发的DOM Element
     let crossRefs = document.querySelectorAll('.cross-refs')
-    console.log(crossRefs)
     /**
      * 鼠标移开触发元素还原样式
      */

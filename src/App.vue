@@ -12,6 +12,8 @@ import { ElNotification } from 'element-plus'
 import MagneticDemo from './components/MagneticDemo.vue'
 import TypeWriter from './components/TypeWriter.vue'
 import Cross from './components/Cross.vue'
+import Closure from './components/Closure.vue'
+import Music from './components/Music.vue'
 const errorAlter = (title: string, messgae: string) => {
   ElNotification({
     title: title,
@@ -47,22 +49,21 @@ onMounted(async () => {
 
     <Bottom></Bottom>
   </div> -->
-  <Cross />
-  <MagneticDemo />
-
-
+  <!-- <Cross /> -->
+  <!-- <MagneticDemo /> -->
+  <!-- <Closure /> -->
+<Music />
   <!-- <TypeWriter /> -->
 </template>
 
 <!-- 隐藏全局光标 -->
 <style>
-* {
+/* * {
   cursor: none !important;
-}
+} */
 </style>
 
 <style scoped>
-
 .background {
   width: 100%;
   min-height: 100vh;
