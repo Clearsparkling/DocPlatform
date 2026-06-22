@@ -57,8 +57,6 @@ const getDocList = async () => {
         // 获取首篇笔记
         result.value = md.render(res.data.data[0].mdContent)
         activeDocId.value = res.data.data[0].id
-    }).catch((params) => {
-        console.log(params)
     })
 }
 
@@ -92,9 +90,6 @@ const handleClose = (done: () => void) => {
     ElMessageBox.confirm('Are you sure to close this dialog?')
         .then(() => {
             done()
-        })
-        .catch(() => {
-
         })
 }
 

@@ -3,7 +3,8 @@ import router from '@/router'
 import { useUserStore } from '@/stores/userStore'
 import request from '@/utils/request'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+
 
 
 
@@ -33,16 +34,16 @@ const registerAgainPassword = ref()
 
 const register = async () => {
     if (!registerAccount.value) {
-        errorAlter('错误', '请输入要创建的账户名')
+        errorAlter({ title: '错误', message: '请输入要创建的账户名' })
     } else if (!(registerPassword.value == registerAgainPassword.value)) {
-        errorAlter('错误', '两次输入的密码不同')
+        errorAlter({ title: '错误', message: '两次输入的密码不同' })
     } else {
         await request.post("/auth/register", {
             username: registerAccount.value,
             password: registerPassword.value
         }).then(res => {
             const { accessToken, username } = res.data.data
-            successAlter(`注册成功 ${username} 欢迎您`, `已为您跳转主页`)
+            successAlter({ title: `注册成功 ${username} 欢迎您`, message: `已为您跳转主页` })
             // 存储token和用户名
             userToken.value = accessToken
             userUsername.value = username
@@ -51,33 +52,38 @@ const register = async () => {
                 params: { id: username }
             })
         }).catch((error) => {
-            errorAlter('该用户名已被注册', '请更换其他用户名')
+            errorAlter({ title: '该用户名已被注册', message: '请更换其他用户名' })
         })
     }
 }
 
+let gift = '50g茶叶,一瓶植物学家'
 
+const loginElemnt = document.querySelector(".login span")
 
-
-
+if (loginElemnt instanceof HTMLElement) {
+    loginElemnt.innerHTML = gift.split(',').map((element) => {
+        return `<span>【赠品】 ${element}</span><br>`
+    }).join('')
+}
 // 登录
 const loginAccount = ref()
 const loginPassword = ref()
 
 const login = async () => {
     if (!loginAccount.value) {
-        errorAlter('错误', '请输入您的账户')
+        errorAlter({ title: '错误', message: '请输入您的账户' })
     } else if (!loginPassword.value) {
-        errorAlter('错误', '请输入您的密码')
+        errorAlter({ title: '错误', message: '请输入您的密码' })
     } else {
-        await request.post("/api/tokenlogin", {
+        await request.post("/auth/login", {
             username: loginAccount.value,
             password: loginPassword.value
         }).then(({ data }) => {
 
             // 将token和用户名解构赋值
             const { accessToken, username } = data.data
-            successAlter('登录成功！', `${username} 欢迎您`)
+            successAlter({ title: '登录成功！', message: `${username} 欢迎您` })
             // 存储token和用户名
             userToken.value = accessToken
             userUsername.value = username
@@ -86,8 +92,8 @@ const login = async () => {
                 name: "userhomepage",
                 params: { id: username }
             })
-		}).catch((params) => {
-            errorAlter('登录失败', '账号或密码错误')
+        }).catch((params) => {
+            errorAlter({ title: '登录失败', message: '账号或密码错误' })
         })
     }
 }
@@ -95,18 +101,24 @@ const login = async () => {
 
 // Alter
 import { ElNotification } from 'element-plus'
-const successAlter = (title: string, messgae: string) => {
+
+interface AlterType {
+    title: string,
+    message: string
+}
+
+const successAlter = (alterType: AlterType) => {
     ElNotification({
-        title: title,
-        message: messgae,
+        title: alterType.title,
+        message: alterType.message,
         type: 'success'
     })
 }
 
-const errorAlter = (title: string, messgae: string) => {
+const errorAlter = (alterType: AlterType) => {
     ElNotification({
-        title: title,
-        message: messgae,
+        title: alterType.title,
+        message: alterType.message,
         type: 'error'
     })
 }

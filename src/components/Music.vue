@@ -60,26 +60,30 @@ const handle = (): number => {
 const activeIndex = ref()
 
 const containerElement = useTemplateRef<HTMLDivElement>("container")
+const containerHeight = ref()
+
 const lrclistElement = useTemplateRef<HTMLUListElement>("lrclist")
 const lrcliElement = ref()
+let liHeight = ref()
 
 const lrcListTanslate = computed(() => {
-    let liHeight = ref()
     lrcliElement.value = document.querySelector(".lrcli")
     if (lrcliElement.value instanceof HTMLElement) {
         liHeight.value = lrcliElement.value.clientHeight
     }
     if (containerElement.value instanceof HTMLElement) {
-        return (activeIndex.value * liHeight.value + liHeight.value / 2 - containerElement.value.clientHeight / 2) * -1
+        return (activeIndex.value * liHeight.value + liHeight.value / 2 - containerHeight.value / 2) * -1
     }
 })
 
 onMounted(() => {
+    if (containerElement.value instanceof HTMLElement) {
+        containerHeight.value = containerElement.value.clientHeight
+    }
     if (audio.value) {
         audio.value.addEventListener("timeupdate", () => {
             activeIndex.value = handle()
             if (lrclistElement.value instanceof HTMLElement) {
-                console.log(lrcListTanslate.value)
                 lrclistElement.value.style.transform = `translateY(${lrcListTanslate.value}px)`
             }
         }
@@ -95,7 +99,7 @@ onMounted(() => {
 
         <div ref="container" class="container">
             <ul ref="lrclist" class="lrc-list">
-                <li class="lrcli" v-for="(value, index) in LRC" :key="index" :class="{ active: activeIndex === index }">
+                <li class="lrcli cross-refs" v-for="(value, index) in LRC" :key="index" :class="{ active: activeIndex === index }">
                     {{
                         value.lyrics
                     }}</li>

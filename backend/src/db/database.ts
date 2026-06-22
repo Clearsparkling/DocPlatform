@@ -69,7 +69,7 @@ class DatabaseManager {
 				'INSERT INTO users (username, password, createdAt) VALUES (?, ?, ?)',
 				[username, password, createdAt]
 			)
-			const result = this.db.query<User>('SELECT * FROM users WHERE username = ?').get(username)
+			const result = this.db.query('SELECT * FROM users WHERE username = ?').get(username) as User | null
 			if (result) {
 				logger.info(`用户创建成功: ${username}`)
 			}
@@ -83,9 +83,9 @@ class DatabaseManager {
 	getUserByUsername(username: string): User | null {
 		logger.debug(`根据用户名查询用户: ${username}`)
 		try {
-			const row = this.db.query<User>(
+			const row = this.db.query(
 				'SELECT * FROM users WHERE username = ?'
-			).get(username)
+			).get(username) as User | null
 			if (row) {
 				logger.debug(`找到用户: ${username}`)
 			} else {
@@ -101,9 +101,9 @@ class DatabaseManager {
 	getUserById(id: number): User | null {
 		logger.debug(`根据ID查询用户: ${id}`)
 		try {
-			const row = this.db.query<User>(
+			const row = this.db.query(
 				'SELECT * FROM users WHERE id = ?'
-			).get(id)
+			).get(id) as User | null
 			return row || null
 		} catch (e) {
 			logger.error(`根据ID查询用户失败: ${id}`, e)
@@ -119,9 +119,9 @@ class DatabaseManager {
 				'INSERT INTO documents (userId, title, filename, content, originalType, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
 				[userId, title, filename, content, originalType, createdAt]
 			)
-			const result = this.db.query<Document>(
+			const result = this.db.query(
 				'SELECT * FROM documents WHERE userId = ? AND title = ? ORDER BY createdAt DESC LIMIT 1'
-			).get(userId, title)
+			).get(userId, title) as Document | null
 			if (result) {
 				logger.info(`文档创建成功: ${title}`)
 			}
@@ -135,9 +135,9 @@ class DatabaseManager {
 	getDocumentsByUserId(userId: number): Document[] {
 		logger.debug(`查询用户的文档列表: ${userId}`)
 		try {
-			const rows = this.db.query<Document>(
+			const rows = this.db.query(
 				'SELECT * FROM documents WHERE userId = ? ORDER BY createdAt DESC'
-			).all(userId)
+			).all(userId) as Document[]
 			logger.debug(`找到 ${rows.length} 个文档`)
 			return rows || []
 		} catch (e) {
@@ -149,9 +149,9 @@ class DatabaseManager {
 	getDocumentById(id: number): Document | null {
 		logger.debug(`根据ID查询文档: ${id}`)
 		try {
-			const row = this.db.query<Document>(
+			const row = this.db.query(
 				'SELECT * FROM documents WHERE id = ?'
-			).get(id)
+			).get(id) as Document | null
 			return row || null
 		} catch (e) {
 			logger.error(`根据ID查询文档失败: ${id}`, e)

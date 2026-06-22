@@ -7,13 +7,9 @@ import { logger } from './utils/logger'
 const app = new Elysia()
 	.use(cors({ origin: 'http://localhost:5173', credentials: true }))
 	.use(jwt({ name: 'jwt', secret: 'your-secret-key-change-this-in-production' }))
-	.onRequest(({ request, set }) => {
-		const start = performance.now()
-		set.onBeforeHandle = () => {
-			const duration = performance.now() - start
-			const url = new URL(request.url)
-			logger.request(request.method, url.pathname, set.status || 200, Math.round(duration))
-		}
+	.onAfterHandle(({ request }) => {
+		const url = new URL(request.url)
+		logger.request(request.method, url.pathname, 200, 0)
 	})
 
 app.post('/auth/register', async ({ body, set, jwt }) => {
@@ -80,9 +76,10 @@ app.get('/auth/me', async ({ headers, set, jwt }) => {
 		return { success: false, message: '无效的 token' }
 	}
 
-	const user = db.getUserByUsername(decoded.username)
+	const username = decoded.username as string
+	const user = db.getUserByUsername(username)
 	if (!user) {
-		logger.warn(`获取用户信息 - 用户不存在: ${decoded.username}`)
+		logger.warn(`获取用户信息 - 用户不存在: ${username}`)
 		set.status = 404
 		return { success: false, message: '用户不存在' }
 	}
@@ -107,9 +104,10 @@ app.post('/documents/upload', async ({ request, headers, set, jwt }) => {
 		return { success: false, message: '无效的 token' }
 	}
 
-	const user = db.getUserByUsername(decoded.username)
+	const username = decoded.username as string
+	const user = db.getUserByUsername(username)
 	if (!user) {
-		logger.warn(`文件上传 - 用户不存在: ${decoded.username}`)
+		logger.warn(`文件上传 - 用户不存在: ${username}`)
 		set.status = 404
 		return { success: false, message: '用户不存在' }
 	}
@@ -195,9 +193,10 @@ app.get('/documents', async ({ headers, set, jwt }) => {
 		return { success: false, message: '无效的 token' }
 	}
 
-	const user = db.getUserByUsername(decoded.username)
+	const username = decoded.username as string
+	const user = db.getUserByUsername(username)
 	if (!user) {
-		logger.warn(`获取文档列表 - 用户不存在: ${decoded.username}`)
+		logger.warn(`获取文档列表 - 用户不存在: ${username}`)
 		set.status = 404
 		return { success: false, message: '用户不存在' }
 	}
@@ -245,9 +244,10 @@ app.get('/documents/:id', async ({ params, headers, set, jwt }) => {
 		return { success: false, message: '无效的 token' }
 	}
 
-	const user = db.getUserByUsername(decoded.username)
+	const username = decoded.username as string
+	const user = db.getUserByUsername(username)
 	if (!user) {
-		logger.warn(`获取文档 - 用户不存在: ${decoded.username}`)
+		logger.warn(`获取文档 - 用户不存在: ${username}`)
 		set.status = 404
 		return { success: false, message: '用户不存在' }
 	}
@@ -307,9 +307,10 @@ app.put('/documents/:id', async ({ params, body, headers, set, jwt }) => {
 		return { success: false, message: '无效的 token' }
 	}
 
-	const user = db.getUserByUsername(decoded.username)
+	const username = decoded.username as string
+	const user = db.getUserByUsername(username)
 	if (!user) {
-		logger.warn(`更新文档 - 用户不存在: ${decoded.username}`)
+		logger.warn(`更新文档 - 用户不存在: ${username}`)
 		set.status = 404
 		return { success: false, message: '用户不存在' }
 	}
@@ -355,9 +356,10 @@ app.delete('/documents/:id', async ({ params, headers, set, jwt }) => {
 		return { success: false, message: '无效的 token' }
 	}
 
-	const user = db.getUserByUsername(decoded.username)
+	const username = decoded.username as string
+	const user = db.getUserByUsername(username)
 	if (!user) {
-		logger.warn(`删除文档 - 用户不存在: ${decoded.username}`)
+		logger.warn(`删除文档 - 用户不存在: ${username}`)
 		set.status = 404
 		return { success: false, message: '用户不存在' }
 	}

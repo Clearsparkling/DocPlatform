@@ -14,6 +14,7 @@ import TypeWriter from './components/TypeWriter.vue'
 import Cross from './components/Cross.vue'
 import Closure from './components/Closure.vue'
 import Music from './components/Music.vue'
+import TotalDemo from './components/TotalDemo.vue'
 const errorAlter = (title: string, messgae: string) => {
   ElNotification({
     title: title,
@@ -40,7 +41,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <!-- <div class="background">
+  <div class="background">
     <Nav></Nav>
 
     <RouterView class="flex-box">
@@ -48,12 +49,18 @@ onMounted(async () => {
     </RouterView>
 
     <Bottom></Bottom>
-  </div> -->
+  </div>
   <!-- <Cross /> -->
   <!-- <MagneticDemo /> -->
   <!-- <Closure /> -->
-<Music />
+<!-- <Music /> -->
   <!-- <TypeWriter /> -->
+
+
+
+
+<!-- <TotalDemo /> -->
+
 </template>
 
 <!-- 隐藏全局光标 -->

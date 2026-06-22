@@ -56,7 +56,6 @@ onMounted(async () => {
     await request.get(`/documents/${userStroe.compileDocId}`).then((res) => {
         DocInfo.value = res.data.data
         compileText.value = res.data.data.mdContent
-        console.log(DocInfo.value)
     })
 })
 

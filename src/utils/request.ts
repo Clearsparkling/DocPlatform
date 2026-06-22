@@ -8,9 +8,9 @@ const request = axios.create({
 // 请求拦截器 登录后所有的请求都将token作为请求头发送到后端
 request.interceptors.request.use(
     (config) => {
-        const { userToken } = useUserStore()
-        if (userToken) {
-            config.headers.Authorization = `Bearer ${userToken}`
+        const userStore = useUserStore()
+        if (userStore.userToken) {
+            config.headers.Authorization = `Bearer ${userStore.userToken}`
         }
         return config
     },
