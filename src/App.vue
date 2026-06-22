@@ -27,15 +27,19 @@ const userStore = useUserStore()
 
 onMounted(async () => {
   if (userStore.userToken) {
-    await request.get("/auth/token/expiration").then((res) => {
-      console.log(res.data)
-    }).catch((error) => {
+    // 使用后端已有的 /auth/me 接口验证 token 是否有效
+    await request.get("/auth/me").then((res) => {
+      // token 有效，更新用户名（确保一致性）
+      if (res.data.success) {
+        userStore.userUsername = res.data.data.username
+      }
+    }).catch(() => {
+      // token 无效或过期，清空并提示
       userStore.userToken = ''
       userStore.userUsername = ''
-      errorAlter('错误', 'token已过期，请重新登录')
+      errorAlter('提示', 'token已过期，请重新登录')
     })
   }
-
 })
 
 </script>
@@ -50,10 +54,10 @@ onMounted(async () => {
 
     <Bottom></Bottom>
   </div>
-  <!-- <Cross /> -->
-  <!-- <MagneticDemo /> -->
-  <!-- <Closure /> -->
-<!-- <Music /> -->
+  <!-- <Cross />
+  <MagneticDemo /> -->
+
+
   <!-- <TypeWriter /> -->
 
 
