@@ -12,6 +12,8 @@ import { ElNotification } from 'element-plus'
 import MagneticDemo from './components/MagneticDemo.vue'
 import TypeWriter from './components/TypeWriter.vue'
 import Cross from './components/Cross.vue'
+import Closure from './components/Closure.vue'
+import Music from './components/Music.vue'
 const errorAlter = (title: string, messgae: string) => {
   ElNotification({
     title: title,
@@ -66,7 +68,6 @@ onMounted(async () => {
 </style>
 
 <style scoped>
-
 .background {
   width: 100%;
   min-height: 100vh;
