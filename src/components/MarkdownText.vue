@@ -5,8 +5,8 @@ import { useUserStore } from '@/stores/userStore';
 import request from '@/utils/request';
 import 'github-markdown-css/github-markdown-dark.css';
 import markdownit from 'markdown-it';
-import { onMounted, ref } from 'vue';
-
+import { computed, onMounted, ref, watch } from 'vue';
+import SearchResults from './SearchResults.vue';
 
 const activeDocId = ref()
 
@@ -42,11 +42,29 @@ interface UserList {
 
 const userMarkdownList = ref<UserList[]>([])
 
+// 搜索相关
+const searchQuery = ref('')
+const searchResults = ref<any[]>([])
+const isSearching = ref(false)
+const searchTotal = ref(0)
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+
+// 将 Markdown 中的相对图片路径重写为后端静态文件 URL
+const rewriteImageUrls = (html: string, docId: number): string => {
+    const backendBase = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+    // 匹配 <img src="相对路径">，排除已经是 http 开头的绝对路径和 base64
+    return html.replace(/<img\s+([^>]*?)src="(?!https?:\/\/|data:)([^"]+)"([^>]*)>/gi, (match, prefix, src, suffix) => {
+        // 如果是相对路径，转换为后端 URL
+        const cleanSrc = src.replace(/^\.\//, '').replace(/^\//, '')
+        return `<img ${prefix}src="${backendBase}/uploads/${docId}/${cleanSrc}"${suffix}>`
+    })
+}
 
 // 渲染列表选中的md文档
-const getDocumentById = (mdContent: string) => {
+const getDocumentById = (mdContent: string, docId?: number) => {
     const markdownText = ref(mdContent)
-    result.value = md.render(markdownText.value)
+    const rendered = md.render(markdownText.value)
+    result.value = docId ? rewriteImageUrls(rendered, docId) : rendered
 }
 
 // 获取笔记列表&获取首篇笔记
@@ -55,13 +73,76 @@ const getDocList = async () => {
         // 获取笔记列表
         userMarkdownList.value = res.data.data
         // 获取首篇笔记
-        result.value = md.render(res.data.data[0].mdContent)
-        activeDocId.value = res.data.data[0].id
+        if (res.data.data.length > 0) {
+            result.value = rewriteImageUrls(md.render(res.data.data[0].mdContent), res.data.data[0].id)
+            activeDocId.value = res.data.data[0].id
+        }
     }).catch((params) => {
         console.log(params)
     })
 }
 
+// 搜索文档（带防抖）
+const performSearch = (query: string) => {
+    if (searchTimer) {
+        clearTimeout(searchTimer)
+        searchTimer = null
+    }
+
+    if (!query.trim()) {
+        isSearching.value = false
+        searchResults.value = []
+        searchTotal.value = 0
+        return
+    }
+
+    searchTimer = setTimeout(async () => {
+        isSearching.value = true
+        try {
+            const res = await request.get('/documents/search', {
+                params: { q: query, lang: 'auto', page: 1, pageSize: 50 }
+            })
+            if (res.data.success) {
+                searchResults.value = res.data.data.documents
+                searchTotal.value = res.data.data.total
+            }
+        } catch (e) {
+            console.error('搜索失败', e)
+            searchResults.value = []
+            searchTotal.value = 0
+        }
+    }, 300)
+}
+
+// 监听搜索输入
+watch(searchQuery, (newVal) => {
+    performSearch(newVal)
+})
+
+// 清空搜索
+const clearSearch = () => {
+    searchQuery.value = ''
+    isSearching.value = false
+    searchResults.value = []
+    searchTotal.value = 0
+}
+
+// 搜索结果中选中文档
+const handleSearchSelect = async (docId: number) => {
+    activeDocId.value = docId
+    activeList.value = -1
+    try {
+        const res = await request.get(`/documents/${docId}`)
+        if (res.data.success) {
+            result.value = rewriteImageUrls(md.render(res.data.data.mdContent), docId)
+        }
+    } catch (e) {
+        console.error('获取文档失败', e)
+    }
+}
+
+// 是否显示搜索结果
+const showSearchResults = computed(() => searchQuery.value.trim() !== '')
 
 onMounted(() => {
     getDocList()
@@ -128,21 +209,6 @@ const downloadDoc = async () => {
         downloadMarkdown(mdContent, title)
     })
 }
-
-/*
-此下载方法为后端提供的接口
-时间不够 后端没提供文件名所以下载的文件缺个文件名
-*/
-// const downloadDoc = async () => {
-//     await request.get(`/documents/${activeDocId.value}/download`).then((res) => {
-//         console.log(res.data)
-//         const blob = new Blob([res.data], { type: 'text/markdown;chars:utf-8' })
-//         const link = document.createElement('a')
-//         link.href = URL.createObjectURL(blob)
-//         link.download = 'text.md'
-//         link.click()
-//     })
-// }
 
 // 字符串包装成md并下载
 const downloadMarkdown = (content: string, filename: string) => {
@@ -230,8 +296,47 @@ const downloadMarkdown = (content: string, filename: string) => {
         </div>
 
         <div class="md-list">
-            <ul>
-                <li @click="getDocumentById(value.mdContent as string); activeList = index; activeDocId = value.id; activeDocInfo = value"
+            <!-- 搜索框 -->
+            <div class="search-box">
+                <el-input
+                    v-model="searchQuery"
+                    placeholder="搜索文档..."
+                    clearable
+                    @clear="clearSearch"
+                    class="search-input"
+                >
+                    <template #prefix>
+                        <svg t="1776407378790" class="search-icon" viewBox="0 0 1024 1024" version="1.1"
+                            xmlns="http://www.w3.org/2000/svg" width="14" height="14">
+                            <path d="M909.6 854.5L649.9 594.8C690.2 542.7 714 478.2 714 408c0-167.6-136.4-304-304-304S106 240.4 106 408s136.4 304 304 304c70.2 0 134.7-23.8 186.8-64.1l259.7 259.7c3.1 3.1 8.2 3.1 11.3 0l42.8-42.8c2.5-2.5 2.5-6.6-1-9.1zM410 676c-147.4 0-268-120.6-268-268s120.6-268 268-268 268 120.6 268 268-120.6 268-268 268z" fill="#888"/>
+                        </svg>
+                    </template>
+                </el-input>
+            </div>
+
+            <!-- 搜索结果 -->
+            <div v-if="showSearchResults" class="search-results-container">
+                <div v-if="isSearching && searchResults.length === 0" class="search-status">
+                    搜索中...
+                </div>
+                <div v-else-if="searchResults.length > 0" class="search-results-wrapper">
+                    <div class="search-status">找到 {{ searchTotal }} 个结果</div>
+                    <el-scrollbar>
+                        <SearchResults
+                            :results="searchResults"
+                            :active-doc-id="activeDocId"
+                            @select="handleSearchSelect"
+                        />
+                    </el-scrollbar>
+                </div>
+                <div v-else class="search-empty">
+                    <el-empty description="未找到匹配的文档" :image-size="60" />
+                </div>
+            </div>
+
+            <!-- 文档列表（非搜索状态） -->
+            <ul v-else>
+                <li @click="getDocumentById(value.mdContent as string, value.id); activeList = index; activeDocId = value.id; activeDocInfo = value"
                     v-for="(value, index) in userMarkdownList" class="markdown-list"
                     :class="{ 'list-active': activeList === index }">
                     {{ value.title }}
@@ -289,6 +394,66 @@ path {
     color: azure;
     border-right: 1px solid #3B3440;
     padding: 10px;
+    overflow: hidden;
+}
+
+/* 搜索框样式 */
+.search-box {
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.search-box :deep(.el-input__wrapper) {
+    background-color: #0c0c0f;
+    border: 1px solid #3B3440;
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+.search-box :deep(.el-input__inner) {
+    color: azure;
+}
+
+.search-box :deep(.el-input__inner::placeholder) {
+    color: #666;
+}
+
+.search-box :deep(.el-input__wrapper:hover),
+.search-box :deep(.el-input__wrapper.is-focus) {
+    border-color: #747bff;
+}
+
+.search-icon path {
+    fill: #888;
+}
+
+/* 搜索结果容器 */
+.search-results-container {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-results-wrapper {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-status {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.search-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .markdown-list {
